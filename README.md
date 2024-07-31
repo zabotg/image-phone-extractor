@@ -11,7 +11,8 @@ This project extracts Brazilian phone numbers from images using OCR (Optical Cha
 ## Setup
 
 1. Install Tesseract:
-    On macOS, you can install Tesseract using Homebrew:
+
+   On macOS, you can install Tesseract using Homebrew:
     
     ```bash
     brew install tesseract
@@ -26,7 +27,7 @@ This project extracts Brazilian phone numbers from images using OCR (Optical Cha
     On Windows, download the installer from the [Tesseract GitHub releases](https://github.com/tesseract-ocr/tesseract) page and follow the installation instructions.
    
 
-2. Install dependencies:
+3. Install dependencies:
    Navigate to the project directory and run:
 
     ```bash
