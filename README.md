@@ -5,24 +5,43 @@ This project extracts Brazilian phone numbers from images using OCR (Optical Cha
 ## Requirements
 
 - Python 3.9+
+- Tesseract
 - Pipenv
 
 ## Setup
 
-1. Install dependencies:
+1. Install Tesseract:
+    On macOS, you can install Tesseract using Homebrew:
+    
+    ```bash
+    brew install tesseract
+    ```
+    On Ubuntu/Debian, use:
+    
+    ```bash
+    sudo apt-get update
+    sudo apt-get install tesseract-ocr
+    ```
+    
+    On Windows, download the installer from the [Tesseract GitHub releases](https://github.com/tesseract-ocr/tesseract) page and follow the installation instructions.
+   
+
+2. Install dependencies:
+   Navigate to the project directory and run:
 
     ```bash
     pipenv install --dev
     ```
 
-2. Create and configure the `.env` file:
+4. Create and configure the `.env` file:
+   Create a .env file in the root of your project with the following content:
 
     ```ini
     INPUT_FOLDER=./data/input
     OUTPUT_FILE=./data/output/extracted_phone_numbers.txt
     ```
 
-3. Create the input and output directories:
+6. Create the input and output directories:
 
     ```bash
     mkdir -p data/input
@@ -47,4 +66,7 @@ To check the code for linting errors using `flake8`, run:
 
 ```bash
 pipenv run flake8 src
-```# image-phone-extractor
+```
+
+Contributing
+If you'd like to contribute, please create a new branch, and submit a pull request.
