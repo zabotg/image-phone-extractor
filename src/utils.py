@@ -1,60 +1,44 @@
+import logging
 import os
 import re
 from typing import List
+
 import pytesseract
 from PIL import Image
 
+logger = logging.getLogger(__name__)
 
-def extract_phone_numbers_from_image(image_path: str, include_country_code: bool) -> List[str]:
-    """Extracts Brazilian phone numbers from an image.
+VALID_IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.bmp', '.gif', '.tiff')
 
-    Args:
-        image_path (str): The path to the image file.
-        include_country_code (bool): Whether to include the +55 country code in the extracted phone numbers.
+_PHONE_PATTERN_WITH_COUNTRY = re.compile(r'(\+55)?\s*(\d{2})\s*(\d{4,5})[-.\s]?(\d{4})')
+_PHONE_PATTERN_WITHOUT_COUNTRY = re.compile(r'(\d{2})\s(\d{4,5})-(\d{4})')
 
-    Returns:
-        List[str]: A list of extracted phone numbers.
-    """
+
+def extract_phone_numbers_from_image(image_path: str, include_country_code: bool = False) -> List[str]:
+    pattern = _PHONE_PATTERN_WITH_COUNTRY if include_country_code else _PHONE_PATTERN_WITHOUT_COUNTRY
     try:
-        img = Image.open(image_path)
-        text = pytesseract.image_to_string(img)
-        
-        if include_country_code:
-            pattern = re.compile(r'(\+55)?\s*(\d{2})\s*(\d{4,5})[-.\s]?(\d{4})')
-        else:
-            pattern = re.compile(r'(\d{2})\s(\d{4,5})-(\d{4})')
-
-        matches = pattern.findall(text)
-        return [''.join(match) for match in matches]
+        text = pytesseract.image_to_string(Image.open(image_path))
+        return [''.join(match) for match in pattern.findall(text)]
     except Exception as e:
-        print(f"Error processing image {image_path}: {e}")
+        logger.error("Error processing image %s: %s", image_path, e)
         return []
 
 
 def get_image_paths(folder_path: str) -> List[str]:
-    """Gets the paths of all valid images in a folder.
-
-    Args:
-        folder_path (str): The path to the folder containing images.
-
-    Returns:
-        List[str]: A list of image file paths.
-    """
-    valid_extensions = ('.jpg', '.jpeg', '.png', '.bmp', '.gif', '.tiff')
-    return [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.lower().endswith(valid_extensions)]
+    return [
+        os.path.join(folder_path, f)
+        for f in os.listdir(folder_path)
+        if f.lower().endswith(VALID_IMAGE_EXTENSIONS)
+    ]
 
 
 def save_phone_numbers_to_file(phone_numbers: List[str], file_path: str) -> None:
-    """Saves extracted phone numbers to a text file.
-
-    Args:
-        phone_numbers (List[str]): A list of phone numbers to save.
-        file_path (str): The path to the file where phone numbers will be saved.
-    """
+    output_dir = os.path.dirname(file_path)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
     try:
         with open(file_path, 'w') as file:
-            for number in phone_numbers:
-                file.write(f"{number}\n")
-        print(f"Phone numbers saved to {file_path}")
+            file.writelines(f"{number}\n" for number in phone_numbers)
+        logger.info("Phone numbers saved to %s", file_path)
     except Exception as e:
-        print(f"Error writing to file {file_path}: {e}")
+        logger.error("Error writing to file %s: %s", file_path, e)

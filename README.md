@@ -1,81 +1,82 @@
 # Image Phone Number Extractor
 
-This project extracts Brazilian phone numbers from images using OCR (Optical Character Recognition) with [Tesseract](https://github.com/tesseract-ocr/tesseract).
+Extracts Brazilian phone numbers from images using OCR ([Tesseract](https://github.com/tesseract-ocr/tesseract)).
 
 ## Requirements
 
 - Python 3.9+
-- Tesseract
+- Tesseract OCR
 - Pipenv
 
 ## Setup
 
-1. Install Tesseract:
+### 1. Install Tesseract
 
-   On macOS, you can install Tesseract using Homebrew:
+**macOS:**
 
-    ```bash
-    brew install tesseract
-    ```
+```bash
+brew install tesseract
+```
 
-    On Ubuntu/Debian, use:
+**Ubuntu/Debian:**
 
-    ```bash
-    sudo apt-get update
-    sudo apt-get install tesseract-ocr
-    ```
+```bash
+sudo apt-get install tesseract-ocr
+```
 
-    On Windows, download the installer from the [Tesseract GitHub releases](https://github.com/tesseract-ocr/tesseract) page and follow the installation instructions.
+**Windows:** Download the installer from the [Tesseract GitHub releases](https://github.com/tesseract-ocr/tesseract) page.
 
-2. Install dependencies:
-   Navigate to the project directory and run:
+### 2. Install Python dependencies
 
-    ```bash
-    pipenv install --dev
-    ```
+```bash
+pipenv install --dev
+```
 
-3. Create and configure the `.env` file:
-   Create a .env file in the root of your project with the following content:
+### 3. Configure environment
 
-    ```ini
-    INPUT_FOLDER=./data/input
-    OUTPUT_FILE=./data/output/extracted_phone_numbers.txt
-    ```
+Copy the example env file and adjust if needed:
 
-4. Create the input and output directories:
+```bash
+cp .env.example .env
+```
 
-    ```bash
-    mkdir -p data/input
-    mkdir -p data/output
-    ```
+```ini
+INPUT_FOLDER=./data/input
+OUTPUT_FILE=./data/output/extracted_phone_numbers.txt
+```
+
+### 4. Create data directories
+
+```bash
+mkdir -p data/input data/output
+```
 
 ## Usage
 
-1. Place the images from which you want to extract phone numbers in the `data/input` directory.
+Place images in `data/input`, then run:
 
-2. Run the script with the appropriate options:
+```bash
+# Without country code (default)
+pipenv run python src/main.py
 
-    - With Country Code (+55):
+# With +55 country code
+pipenv run python src/main.py --include-country-code
+```
 
-    ```bash
-    python src/main.py --include-country-code
-    ```
+Extracted numbers are saved to `data/output/extracted_phone_numbers.txt`.
 
-    - Without Country Code:
+## Running Tests
 
-    ```bash
-    pipenv run python src/main.py
-    ```
-
-3. Extracted phone numbers will be saved to `data/output/extracted_phone_numbers.txt`.
+```bash
+pipenv run pytest
+```
 
 ## Linting
-
-To check the code for linting errors using `flake8`, run:
 
 ```bash
 pipenv run flake8 src
 ```
 
-Contributing
-If you'd like to contribute, please create a new branch, and submit a pull request.
+## Contributing
+
+Create a new branch and submit a pull request.
